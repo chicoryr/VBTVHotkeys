@@ -5,44 +5,6 @@ function getVideoElement() {
 }
 let hidden = false;
 
-
-function createToggleButton() {
-    if (document.getElementById('hide-ui-btn')) return;
-    const container = document.querySelector('.video-js');
-    if (!container) return;
-
-    const button = document.createElement('button');
-    button.id = 'hide-ui-btn';
-    button.textContent = '🧹';
-    button.title = 'Toggle progress/time display (or press H)';
-    Object.assign(button.style, {
-        position: 'absolute',
-        top: '10px',
-        right: '10px',
-        zIndex: 9999,
-        fontSize: '16px',
-        background: 'rgba(0, 0, 0, 0.7)',
-        color: 'white',
-        border: 'none',
-        borderRadius: '4px',
-        padding: '4px 8px',
-        cursor: 'pointer',
-    });
-
-    let hidden = false;
-
-    const toggle = () => {
-        hidden = !hidden;
-        togglePlayerUI(hidden);
-        button.style.opacity = hidden ? 0.4 : 1;
-    };
-
-    button.onclick = toggle;
-    container.style.position = 'relative';
-    container.appendChild(button);
-}
-
-
 function togglePlayerUI(hidden) {
     const selectors = [
         '.vjs-progress-control',
