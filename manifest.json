@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "VBTV Hotkeys",
+    "version": "1.0",
+    "description": "Adds hotkeys to VBTV",
+    "permissions": ["activeTab"],
+    "host_permissions": ["<all_urls>"],
+    "content_scripts": [
+      {
+        "matches": ["https://tv.volleyballworld.com/*"],
+        "js": ["content.js"]
+      }
+    ]
+  }
+  
