@@ -78,11 +78,15 @@ function handleKeydown(event) {
 
         case "KeyJ":
         case "ArrowLeft":
+            event.preventDefault();
+            event.stopPropagation();
             video.currentTime -= (event.code === "KeyJ" ? 10 : 5);
             break;
 
         case "KeyL":
         case "ArrowRight":
+            event.preventDefault();
+            event.stopPropagation();
             video.currentTime += (event.code === "KeyL" ? 10 : 5);
             break;
 
@@ -143,7 +147,7 @@ function handleKeydown(event) {
 
 window.addEventListener("keydown", handleKeydown, true);
 createToggleButton();
-// Refocus video after fullscreen or UI clicks
+
 function refocusVideo() {
     const video = getVideoElement();
     if (video) video.focus();
