@@ -7,7 +7,7 @@
     "host_permissions": ["<all_urls>"],
     "content_scripts": [
       {
-        "matches": ["https://tv.volleyballworld.com/*"],
+        "matches": ["https://tv.volleyballworld.com/*", "https://app.balltime.com/*"],
         "js": ["content.js"]
       }
     ]
