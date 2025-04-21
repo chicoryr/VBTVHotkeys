@@ -5,20 +5,38 @@ function getVideoElement() {
 }
 let hidden = false;
 
-function togglePlayerUI(hidden) {
+function togglePlayerUI() {
     const selectors = [
         '.vjs-progress-control',
         '.vjs-time-control',
         '.vjs-remaining-time',
     ];
 
+
+    document.querySelectorAll(
+        'span.leading-runtime-line-height.tracking-runtime-letter-spacing'
+      ).forEach(span => {
+        span.style.filter =  hidden ? 'blur(6px)' : 'none';
+        span.style.transition = 'filter 0.3s ease';
+        span.style.cursor = 'pointer';
+      
+        span.addEventListener('mouseover', () => {
+          span.style.filter = 'none';
+        });
+      
+        span.addEventListener('mouseout', () => {
+          span.style.filter = hidden ? 'blur(6px)' : none;
+        });
+      });
+
     selectors.forEach((selector) => {
         document.querySelectorAll(selector).forEach((el) => {
             el.style.display = hidden ? 'none' : '';
         });
     });
+    hidden = !hidden;
 }
-
+togglePlayerUI();
 function changeVideoTime(amount, event) {
     event.preventDefault();
     event.stopPropagation();
@@ -99,15 +117,13 @@ function handleKeydown(event) {
 
         case "KeyH":
             event.preventDefault();
-            hidden = !hidden;
-            togglePlayerUI(hidden);
+            togglePlayerUI();
             break;
 
     }
 }
 
 window.addEventListener("keydown", handleKeydown, true);
-createToggleButton();
 
 function refocusVideo() {
     const video = getVideoElement();
