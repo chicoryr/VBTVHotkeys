@@ -3,7 +3,7 @@
     "name": "VBTV Hotkeys",
     "version": "1.0",
     "description": "Adds hotkeys to VBTV",
-    "permissions": [""],
+    "permissions": [],
     "host_permissions": ["<all_urls>"],
     "content_scripts": [
       {

@@ -3,45 +3,62 @@ function getVideoElement() {
     if (!videoContainer) return null;
     return videoContainer.querySelector('video');
 }
+
 let hidden = false;
 
 function togglePlayerUI() {
+    hidden = !hidden;
+
+    // Inject blur style if not already injected
+    const style = document.createElement('style');
+    style.textContent = `.blurred { filter: blur(6px); cursor: default; }`;
+    document.head.appendChild(style);
+
+    // Apply or remove blur effect
+    document.querySelectorAll('span.leading-runtime-line-height.tracking-runtime-letter-spacing')
+      .forEach(el => {
+        if (hidden) {
+          el.classList.add('blurred');
+        } else {
+          el.classList.remove('blurred');
+        }
+      });
+
+    // Hide or show UI elements based on 'hidden' state
     const selectors = [
         '.vjs-progress-control',
         '.vjs-time-control',
         '.vjs-remaining-time',
     ];
 
-
-    document.querySelectorAll(
-        'span.leading-runtime-line-height.tracking-runtime-letter-spacing'
-      ).forEach(span => {
-        span.style.filter =  hidden ? 'blur(6px)' : 'none';
-        span.style.transition = 'filter 0.3s ease';
-        span.style.cursor = 'pointer';
-      
-        span.addEventListener('mouseover', () => {
-          span.style.filter = 'none';
-        });
-      
-        span.addEventListener('mouseout', () => {
-          span.style.filter = hidden ? 'blur(6px)' : none;
-        });
-      });
-
     selectors.forEach((selector) => {
         document.querySelectorAll(selector).forEach((el) => {
+            console.log(hidden)
             el.style.display = hidden ? 'none' : '';
         });
     });
-    hidden = !hidden;
 }
-togglePlayerUI();
-function changeVideoTime(amount, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    video.currentTime += amount;
-}
+
+// MutationObserver to check if the player and its elements are fully loaded
+const observer = new MutationObserver((mutationsList, observer) => {
+    const videoElement = getVideoElement();
+    const progressControl = document.querySelector('.vjs-progress-control');
+
+    // Check if both the video element and progress control are present
+    if (videoElement && progressControl) {
+        console.log('Player and UI elements are ready');
+        observer.disconnect(); // Stop observing once the elements are ready
+        togglePlayerUI(); // Call your toggle function when the elements are loaded
+    }
+});
+
+// Start observing the body for changes
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+
+// This ensures that the player UI elements will be hidden/blurred when the page is fully loaded
 function handleKeydown(event) {
     const video = getVideoElement();
     if (!video) return;
@@ -61,17 +78,17 @@ function handleKeydown(event) {
             break;
 
         case "KeyJ":
-            changeVideoTime(-10)
+            changeVideoTime(-10, event);
             break;
         case "ArrowLeft":
-            changeVideoTime(-5)
+            changeVideoTime(-5, event);
             break;
 
         case "KeyL":
-            changeVideoTime(10)
+            changeVideoTime(10, event);
             break;
         case "ArrowRight":
-            changeVideoTime(5)
+            changeVideoTime(5, event);
             break;
 
         case "KeyM":
@@ -119,7 +136,6 @@ function handleKeydown(event) {
             event.preventDefault();
             togglePlayerUI();
             break;
-
     }
 }
 
@@ -140,8 +156,10 @@ document.addEventListener("click", (e) => {
     }
 });
 
+// Add a listener for the page load event to ensure everything is ready
 window.addEventListener("load", () => {
-    setTimeout(refocusVideo, 500);
+    setTimeout(() => {
+        refocusVideo();
+        togglePlayerUI();
+    }, 500);
 });
-
-
