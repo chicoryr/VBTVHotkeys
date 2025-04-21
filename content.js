@@ -19,7 +19,11 @@ function togglePlayerUI(hidden) {
     });
 }
 
-
+function changeVideoTime(amount, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    video.currentTime += amount;
+}
 function handleKeydown(event) {
     const video = getVideoElement();
     if (!video) return;
@@ -28,7 +32,7 @@ function handleKeydown(event) {
     const isTyping = tag === 'input' || tag === 'textarea' || document.activeElement.isContentEditable;
     if (isTyping) return;
 
-    const step = 1 / 50; // For 50fps frame stepping
+    const step = 1 / 50;
 
     switch (event.code) {
         case "KeyK":
@@ -39,17 +43,17 @@ function handleKeydown(event) {
             break;
 
         case "KeyJ":
+            changeVideoTime(-10)
+            break;
         case "ArrowLeft":
-            event.preventDefault();
-            event.stopPropagation();
-            video.currentTime -= (event.code === "KeyJ" ? 10 : 5);
+            changeVideoTime(-5)
             break;
 
         case "KeyL":
+            changeVideoTime(10)
+            break;
         case "ArrowRight":
-            event.preventDefault();
-            event.stopPropagation();
-            video.currentTime += (event.code === "KeyL" ? 10 : 5);
+            changeVideoTime(5)
             break;
 
         case "KeyM":
@@ -69,35 +73,30 @@ function handleKeydown(event) {
             }
             break;
 
-        case "Comma": // Slow down
+        case "Comma":
             event.preventDefault();
             video.playbackRate = Math.max(0.1, video.playbackRate - 0.1);
             break;
 
-        case "Period": // Speed up
+        case "Period":
             event.preventDefault();
             video.playbackRate = Math.min(4, video.playbackRate + 0.1);
             break;
-
-        case "Digit0": case "Digit1": case "Digit2": case "Digit3": case "Digit4":
-        case "Digit5": case "Digit6": case "Digit7": case "Digit8": case "Digit9":
-            const percent = parseInt(event.code.replace("Digit", ""), 10);
-            video.currentTime = video.duration * (percent / 10);
+        case "Slash":
+            event.preventDefault();
+            video.playbackRate = 1;
             break;
-
-        case "KeyN": // Frame-by-frame (only when paused)
+        case "KeyB":
+            if (video.paused) {
+                video.currentTime -= step;
+            }
+            break;
+        case "KeyN":
             if (video.paused) {
                 video.currentTime += step;
             }
             break;
 
-        case "KeyC": // Captions toggle
-            const player = video?.player || videoContainer?.player;
-            if (player && player.textTracks && player.textTracks.length) {
-                const track = player.textTracks[0];
-                track.mode = track.mode === "showing" ? "hidden" : "showing";
-            }
-            break;
         case "KeyH":
             event.preventDefault();
             hidden = !hidden;
