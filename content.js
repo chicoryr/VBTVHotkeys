@@ -156,6 +156,12 @@ document.addEventListener("click", (e) => {
     }
 });
 
+function changeVideoTime(amount, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    video.currentTime += amount;
+}
+
 // Add a listener for the page load event to ensure everything is ready
 window.addEventListener("load", () => {
     setTimeout(() => {
