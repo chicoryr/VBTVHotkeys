@@ -39,6 +39,19 @@ function togglePlayerUI() {
     });
 }
 
+function changeVideoTime(seconds, event) {
+    const video = getVideoElement();
+    if (!video) return;
+
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    video.currentTime += seconds;
+    refocusVideo(); 
+}
+
 // MutationObserver to check if the player and its elements are fully loaded
 const observer = new MutationObserver((mutationsList, observer) => {
     const videoElement = getVideoElement();
@@ -57,6 +70,7 @@ observer.observe(document.body, {
     childList: true,
     subtree: true
 });
+
 
 // This ensures that the player UI elements will be hidden/blurred when the page is fully loaded
 function handleKeydown(event) {
@@ -155,12 +169,6 @@ document.addEventListener("click", (e) => {
         setTimeout(refocusVideo, 100);
     }
 });
-
-function changeVideoTime(amount, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    video.currentTime += amount;
-}
 
 // Add a listener for the page load event to ensure everything is ready
 window.addEventListener("load", () => {
