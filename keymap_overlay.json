@@ -1,0 +1,12 @@
+[
+    { "key": "Spacebar", "action": "pause/play" },
+    { "key": "J and L", "action": "forward/backward 10 seconds" },
+    { "key": "left and right arrows", "action": "forward/backward 5 seconds" },
+    { "key": "M", "action": "mute/unmute" },
+    { "key": "F", "action": "enter/exit fullscreen" },
+    { "key": ", and .", "action": "speedup/slowdown video" },
+    { "key": "/", "action": "reset playback speed" },
+    { "key": "B and N", "action": "frame-by-frame navigation" },
+    { "key": "H", "action": "show/hide progress bar" },
+    { "key": "`", "action": "show/hide this help" }
+]

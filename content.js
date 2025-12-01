@@ -5,6 +5,13 @@ function getVideoElement() {
 }
 
 let hidden = false;
+let overlayVisible = false;
+let contentData = [];
+
+fetch(chrome.runtime.getURL('keymap_overlay.json'))
+    .then(response => response.json())
+    .then(data => contentData = data)
+    .catch(console.error);
 
 function togglePlayerUI() {
     hidden = !hidden;
@@ -37,6 +44,51 @@ function togglePlayerUI() {
             el.style.display = hidden ? 'none' : '';
         });
     });
+}
+
+function toggleOverlay() {
+    overlayVisible = !overlayVisible;
+    let overlay = document.getElementById('vbtv-custom-overlay');
+    
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'vbtv-custom-overlay';
+        
+        const dataToRender = contentData.length > 0 ? contentData : [{ key: "Loading...", action: "Data not yet loaded." }];
+
+        let htmlContent = `
+            <div style="display: grid; grid-template-columns: auto auto; column-gap: 20px; row-gap: 10px; align-items: baseline;">
+        `;
+
+        dataToRender.forEach(item => {
+            htmlContent += `
+                <div style="text-align: right; font-weight: bold; color: #FFD700;">${item.key}</div>
+                <div style="text-align: left;">${item.action}</div>
+            `;
+        });
+
+        htmlContent += `</div>`;
+        overlay.innerHTML = htmlContent;
+        
+        overlay.style.position = 'absolute';
+        overlay.style.top = '20%';
+        overlay.style.left = '50%';
+        overlay.style.transform = 'translate(-50%, 0)';
+        overlay.style.color = 'white';
+        overlay.style.fontSize = '1.2em';
+        overlay.style.zIndex = '9999';
+        overlay.style.textShadow = '1px 1px 2px black';
+        overlay.style.pointerEvents = 'none';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+        overlay.style.padding = '20px';
+        overlay.style.borderRadius = '8px';
+        overlay.style.display = 'none';
+        
+        const videoContainer = document.querySelector('.video-js');
+        if (videoContainer) videoContainer.appendChild(overlay);
+        else document.body.appendChild(overlay);
+    }
+    overlay.style.display = overlayVisible ? 'block' : 'none';
 }
 
 function changeVideoTime(seconds, event) {
@@ -149,6 +201,11 @@ function handleKeydown(event) {
         case "KeyH":
             event.preventDefault();
             togglePlayerUI();
+            break;
+
+        case "Backquote": // The ` key
+            event.preventDefault();
+            toggleOverlay();
             break;
     }
 }
